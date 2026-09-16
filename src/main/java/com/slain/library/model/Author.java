@@ -2,9 +2,10 @@ package com.slain.library.model;
 
 import com.slain.library.enums.GenderType;
 import jakarta.persistence.*;
-
+import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Author {
 
     @Id
@@ -17,5 +18,8 @@ public class Author {
 
     @Enumerated(value = EnumType.STRING)
     private GenderType gender;
+
+    @OneToMany(mappedBy = "author")
+    private List<Book> books;
 
 }

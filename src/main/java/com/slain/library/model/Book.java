@@ -15,8 +15,6 @@ public class Book {
 
     private String title;
 
-    private String author;
-
     @Enumerated(EnumType.STRING)
     private BookType type;
 
@@ -29,6 +27,17 @@ public class Book {
     @ManyToOne(optional = true)
     private Reader reader;
 
+    @ManyToOne
+    private Author author;
+
+    // Methods
+    public void update(Book book) {
+        this.title = book.getTitle();
+        this.type = book.getType();
+        this.status = book.getStatus();
+        this.author = book.getAuthor();
+    }
+
     // Getters
     public UUID getId() {
         return id;
@@ -38,7 +47,7 @@ public class Book {
         return title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
@@ -51,12 +60,11 @@ public class Book {
     }
 
     // Setters
-
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
