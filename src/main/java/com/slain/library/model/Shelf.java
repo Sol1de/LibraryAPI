@@ -17,4 +17,25 @@ public class Shelf {
     @ManyToOne
     private BookShelf bookShelf;
 
+    // Getters
+    public UUID getId() {
+        return id;
+    }
+
+    public List<Book> getBook() {
+        return book;
+    }
+
+    public BookShelf getBookShelf() {
+        return bookShelf;
+    }
+
+    // Setters
+    public void setBook(List<Book> book) {
+        this.book = book;
+    }
+
+    public void setBookShelf(BookShelf bookShelf) {
+        this.bookShelf = bookShelf;
+    }
 }
