@@ -4,35 +4,34 @@ import com.slain.library.exceptions.author.AuthorNotFoundException;
 import com.slain.library.model.Author;
 import com.slain.library.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AuthorService {
-    private final AuthorRepository AuthorRepository;
+    private final AuthorRepository authorRepository;
 
     public AuthorService(
-            AuthorRepository AuthorRepository
+            AuthorRepository authorRepository
     ) {
-        this.AuthorRepository = AuthorRepository;
+        this.authorRepository = authorRepository;
     }
 
     public List<Author> getAll() {
-        return this.AuthorRepository.findAll();
+        return this.authorRepository.findAll();
     }
 
     public Author get(UUID id) throws AuthorNotFoundException {
-        return this.AuthorRepository.findById(id)
+        return this.authorRepository.findById(id)
                 .orElseThrow(AuthorNotFoundException::new);
     }
 
     public Author create(Author author) {
-        return this.AuthorRepository.save(author);
+        return this.authorRepository.save(author);
     }
 
     public Author update(UUID id, Author author) throws AuthorNotFoundException {
-        var existingAuthor = this.AuthorRepository.findById(id)
+        var existingAuthor = this.authorRepository.findById(id)
                 .orElseThrow(AuthorNotFoundException::new);
 
         existingAuthor.setFirstName(author.getFirstName());
@@ -40,12 +39,12 @@ public class AuthorService {
         existingAuthor.setGender(author.getGender());
         existingAuthor.setBooks(author.getBooks());
 
-        return this.AuthorRepository.save(existingAuthor);
+        return this.authorRepository.save(existingAuthor);
     }
 
     public void delete(UUID id) throws AuthorNotFoundException {
-        var existingAuthor = this.AuthorRepository.findById(id)
+        var existingAuthor = this.authorRepository.findById(id)
                 .orElseThrow(AuthorNotFoundException::new);
-        this.AuthorRepository.delete(existingAuthor);
+        this.authorRepository.delete(existingAuthor);
     }
 }

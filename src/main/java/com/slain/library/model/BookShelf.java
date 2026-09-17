@@ -1,7 +1,6 @@
 package com.slain.library.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.UUID;
 
