@@ -1,7 +1,7 @@
 package com.slain.library.exceptions;
 
+import com.slain.library.exceptions.author.AuthorNotFoundException;
 import com.slain.library.exceptions.book.BookNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             BookNotFoundException.class,
+            AuthorNotFoundException.class
     })
 
     public ResponseEntity<Map<String, Object>> handleNotFound(Exception exception) {

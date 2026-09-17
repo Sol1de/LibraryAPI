@@ -14,7 +14,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/book")
 public class BookController {
-
     private final BookService bookService;
 
     public BookController(
@@ -24,28 +23,28 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks() {
-        return ResponseEntity.ok(this.bookService.getBooks());
+    public ResponseEntity<List<Book>> getAll() {
+        return ResponseEntity.ok(this.bookService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable UUID id) throws BookNotFoundException {
-        return ResponseEntity.ok(this.bookService.getBook(id));
+    public ResponseEntity<Book> get(@PathVariable UUID id) throws BookNotFoundException {
+        return ResponseEntity.ok(this.bookService.get(id));
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.bookService.createBook(book));
+    public ResponseEntity<Book> create(@RequestBody Book book) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.bookService.create(book));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable UUID id, @RequestBody Book book) throws BookNotFoundException {
-        return ResponseEntity.ok(this.bookService.updateBook(id, book));
+    public ResponseEntity<Book> update(@PathVariable UUID id, @RequestBody Book book) throws BookNotFoundException {
+        return ResponseEntity.ok(this.bookService.update(id, book));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteBook(@PathVariable UUID id) throws BookNotFoundException {
-        this.bookService.deleteBook(id);
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID id) throws BookNotFoundException {
+        this.bookService.delete(id);
         HttpStatus status = HttpStatus.OK;
 
         return ResponseEntity.status(status).body(Map.of(

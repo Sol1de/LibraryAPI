@@ -22,4 +22,41 @@ public class Author {
     @OneToMany(mappedBy = "author")
     private List<Book> books;
 
+    // Getters
+    public UUID getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    // Setters
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
 }

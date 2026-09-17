@@ -3,7 +3,6 @@ package com.slain.library.model;
 import com.slain.library.enums.BookStatus;
 import com.slain.library.enums.BookType;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity
@@ -29,14 +28,6 @@ public class Book {
 
     @ManyToOne
     private Author author;
-
-    // Methods
-    public void update(Book book) {
-        this.title = book.getTitle();
-        this.type = book.getType();
-        this.status = book.getStatus();
-        this.author = book.getAuthor();
-    }
 
     // Getters
     public UUID getId() {
