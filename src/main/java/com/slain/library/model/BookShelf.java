@@ -14,4 +14,17 @@ public class BookShelf {
      @OneToMany(mappedBy = "bookShelf")
      private List<Shelf> shelf;
 
+     // Getters
+     public UUID getId() {
+          return id;
+     }
+
+     public List<Shelf> getShelf() {
+          return shelf;
+     }
+
+     // Setters
+     public void setShelf(List<Shelf> shelf) {
+          this.shelf = shelf;
+     }
 }

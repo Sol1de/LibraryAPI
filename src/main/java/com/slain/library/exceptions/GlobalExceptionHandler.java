@@ -2,6 +2,7 @@ package com.slain.library.exceptions;
 
 import com.slain.library.exceptions.author.AuthorNotFoundException;
 import com.slain.library.exceptions.book.BookNotFoundException;
+import com.slain.library.exceptions.bookshelf.BookShelfNotFoundException;
 import com.slain.library.exceptions.reader.ReaderNotFoundException;
 import com.slain.library.exceptions.shelf.ShelfNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,8 @@ public class GlobalExceptionHandler {
             BookNotFoundException.class,
             AuthorNotFoundException.class,
             ReaderNotFoundException.class,
-            ShelfNotFoundException.class
+            ShelfNotFoundException.class,
+            BookShelfNotFoundException.class
     })
 
     public ResponseEntity<Map<String, Object>> handleNotFound(Exception exception) {
