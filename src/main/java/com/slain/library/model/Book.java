@@ -3,6 +3,7 @@ package com.slain.library.model;
 import com.slain.library.enums.BookStatus;
 import com.slain.library.enums.BookType;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +24,7 @@ public class Book {
     @ManyToOne
     private Shelf shelf;
 
+    @JsonIgnore
     @ManyToOne(optional = true)
     private Reader reader;
 

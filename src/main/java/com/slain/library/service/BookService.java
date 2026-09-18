@@ -28,28 +28,29 @@ public class BookService {
     }
 
     public Book create(Book book) {
-        return this.bookRepository.save(book);
+        var created = new Book();
+        copyFields(book, created);
+        return this.bookRepository.save(created);
     }
 
     @Transactional
     public Book update(UUID id, Book book) throws BookNotFoundException {
-        var existingBook = this.bookRepository.findById(id)
-                .orElseThrow(BookNotFoundException::new);
-
-        existingBook.setTitle(book.getTitle());
-        existingBook.setType(book.getType());
-        existingBook.setStatus(book.getStatus());
-        existingBook.setAuthor(book.getAuthor());
-        existingBook.setReader(book.getReader());
-        existingBook.setShelf(book.getShelf());
-
+        var existingBook = get(id);
+        copyFields(book, existingBook);
         return this.bookRepository.save(existingBook);
     }
 
     @Transactional
     public void delete(UUID id) throws BookNotFoundException {
-        var existingBook = this.bookRepository.findById(id)
-                .orElseThrow(BookNotFoundException::new);
+        var existingBook = get(id);
         this.bookRepository.delete(existingBook);
+    }
+
+    private void copyFields(Book source, Book target) {
+        target.setTitle(source.getTitle());
+        target.setType(source.getType());
+        target.setStatus(source.getStatus());
+        target.setAuthor(source.getAuthor());
+        target.setShelf(source.getShelf());
     }
 }

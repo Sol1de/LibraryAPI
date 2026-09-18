@@ -2,6 +2,7 @@ package com.slain.library.model;
 
 import com.slain.library.enums.GenderType;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class Author {
     @Enumerated(value = EnumType.STRING)
     private GenderType gender;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Book> books;
 

@@ -8,6 +8,7 @@ import com.slain.library.model.Shelf;
 import com.slain.library.enums.BookStatus;
 import com.slain.library.enums.BookType;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -20,33 +21,78 @@ public class BookSeeder {
         this.repository = repository;
     }
 
-    public boolean isEmpty() {
-        return repository.count() == 0;
+    public List<Book> seed(List<Author> authors, List<Reader> readers, List<Shelf> shelves) {
+        var existing = repository.findAll();
+        var first = fixture(
+                existing,
+                "Les Misérables",
+                BookType.ROMANCE,
+                BookStatus.AVAILABLE,
+                authors.get(0),
+                null,
+                shelves.get(0)
+        );
+
+        var second = fixture(
+                existing,
+                "Notre-Dame de Paris",
+                BookType.ROMANCE,
+                BookStatus.RENTED,
+                authors.get(0),
+                readers.get(0),
+                shelves.get(0)
+        );
+
+        var third = fixture(
+                existing,
+                "Frankenstein",
+                BookType.HORROR,
+                BookStatus.RENTED,
+                authors.get(1),
+                readers.get(1),
+                shelves.get(1)
+        );
+        return repository.saveAll(List.of(first, second, third));
     }
 
-    public List<Book> seed(List<Author> authors, List<Reader> readers, List<Shelf> shelves) {
-        Book first = new Book();
-        first.setTitle("Les Misérables");
-        first.setType(BookType.ROMANCE);
-        first.setStatus(BookStatus.AVAILABLE);
-        first.setAuthor(authors.get(0));
-        first.setShelf(shelves.get(0));
+    private Book fixture(
+            List<Book> existing,
+            String title,
+            BookType type,
+            BookStatus status,
+            Author author,
+            Reader reader,
+            Shelf shelf
+    ) {
+        var matches = existing.stream()
+                .filter(candidate -> Objects.equals(candidate.getTitle(), title)
+                        && candidate.getAuthor() != null
+                        && Objects.equals(candidate.getAuthor().getId(), author.getId()))
+                .toList();
+        if (matches.size() > 1) {
+            throw new IllegalStateException(
+                    "Ambiguous book fixture: " + title + " by "
+                            + author.getFirstName() + " " + author.getLastName());
+        }
+        var book = matches.isEmpty() ? new Book() : matches.getFirst();
+        configure(book, title, type, status, author, reader, shelf);
+        return book;
+    }
 
-        Book second = new Book();
-        second.setTitle("Notre-Dame de Paris");
-        second.setType(BookType.ROMANCE);
-        second.setStatus(BookStatus.RENTED);
-        second.setAuthor(authors.get(0));
-        second.setReader(readers.get(0));
-        second.setShelf(shelves.get(0));
-
-        Book third = new Book();
-        third.setTitle("Frankenstein");
-        third.setType(BookType.HORROR);
-        third.setStatus(BookStatus.RENTED);
-        third.setAuthor(authors.get(1));
-        third.setReader(readers.get(1));
-        third.setShelf(shelves.get(1));
-        return repository.saveAll(List.of(first, second, third));
+    private void configure(
+            Book book,
+            String title,
+            BookType type,
+            BookStatus status,
+            Author author,
+            Reader reader,
+            Shelf shelf
+    ) {
+        book.setTitle(title);
+        book.setType(type);
+        book.setStatus(status);
+        book.setAuthor(author);
+        book.setReader(reader);
+        book.setShelf(shelf);
     }
 }

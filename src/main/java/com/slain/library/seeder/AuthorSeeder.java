@@ -4,6 +4,7 @@ import com.slain.library.model.Author;
 import com.slain.library.repository.AuthorRepository;
 import com.slain.library.enums.GenderType;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -16,23 +17,25 @@ public class AuthorSeeder {
         this.repository = repository;
     }
 
-    public List<Author> getAll() {
-        return repository.findAll();
-    }
-
-    public boolean isEmpty() {
-        return repository.count() == 0;
-    }
-
     public List<Author> seed() {
-        Author first = new Author();
-        first.setFirstName("Victor");
-        first.setLastName("Hugo");
-        first.setGender(GenderType.MALE);
-        Author second = new Author();
-        second.setFirstName("Mary");
-        second.setLastName("Shelley");
-        second.setGender(GenderType.FEMALE);
+        var existing = repository.findAll();
+        var first = fixture(existing, "Victor", "Hugo", GenderType.MALE);
+        var second = fixture(existing, "Mary", "Shelley", GenderType.FEMALE);
         return repository.saveAll(List.of(first, second));
+    }
+
+    private Author fixture(List<Author> existing, String firstName, String lastName, GenderType gender) {
+        var matches = existing.stream()
+                .filter(candidate -> Objects.equals(candidate.getFirstName(), firstName)
+                        && Objects.equals(candidate.getLastName(), lastName))
+                .toList();
+        if (matches.size() > 1) {
+            throw new IllegalStateException("Ambiguous author fixture: " + firstName + " " + lastName);
+        }
+        var author = matches.isEmpty() ? new Author() : matches.getFirst();
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+        author.setGender(gender);
+        return author;
     }
 }

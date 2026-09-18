@@ -1,6 +1,7 @@
 package com.slain.library.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ public class BookShelf {
      @ManyToOne
      private Library library;
 
+     @JsonIgnore
      @OneToMany(mappedBy = "bookShelf", cascade = CascadeType.REMOVE)
      private List<Shelf> shelf;
 

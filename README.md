@@ -76,15 +76,7 @@ If `.env` does not already exist:
 cp .env.example .env
 ```
 
-**2. Configure the database connection.**
-
-In `.env`, set the datasource URL to the database service's hostname:
-
-```dotenv
-DATASOURCE_URL=jdbc:postgresql://database:5432/library
-```
-
-**3. Build and start the application and database.**
+**2. Build and start the application and database.**
 
 ```sh
 make build
@@ -93,15 +85,14 @@ make up
 
 Docker builds the application with JDK 25 and runs it with a Java 25 runtime. The API is available at **http://localhost:8080**, or the host port configured by `APP_PORT`.
 
-**4. Stop the containers when finished.**
+**3. Stop the containers when finished.**
 
 Database data is preserved:
 
 ```sh
 make down
 ```
-> [!WARNING]
-> **Switching between Docker and local execution:** the container connects to `database:5432`, but local Java and Maven commands connect to `localhost:${POSTGRES_PORT}`. Update `DATASOURCE_URL` accordingly. Local and containerized applications cannot both bind to the same host port.
+Docker Compose automatically uses `database:5432` for the application container. Keep `DATASOURCE_URL` configured with `localhost:${POSTGRES_PORT}` for local Java, Maven and Make commands. Local and containerized applications cannot both bind to the same host port.
 
 ## Configuration
 
@@ -114,7 +105,7 @@ The local application imports `.env` through `application.properties`. Docker Co
 | `POSTGRES_USER`     | `library`                                  | PostgreSQL username                                    |
 | `POSTGRES_PASSWORD` | `library`                                  | PostgreSQL password                                    |
 | `POSTGRES_PORT`     | `5432`                                     | Database port exposed on the host's loopback interface |
-| `DATASOURCE_URL`    | `jdbc:postgresql://localhost:5432/library` | JDBC connection URL, use `database:5432` inside Docker |
+| `DATASOURCE_URL`    | `jdbc:postgresql://localhost:5432/library` | JDBC connection URL for local Java, Maven and Make commands |
 
 For local execution, the application listens on port `8080` by default.
 
@@ -243,12 +234,11 @@ Base URL for the default setup: `http://localhost:8080`.
 |-----------|--------------|
 | Books     | `/book`      |
 | Authors   | `/author`    |
-| Readers   | `/reader`    |
 | Libraries | `/library`   |
 | Bookcases | `/bookshelf` |
 | Shelves   | `/shelf`     |
 
-Each path supports the same operations:
+Controllers expose the following operations, subject to the access rules below:
 
 | Method   | Route              | Operation                        |
 |----------|--------------------|----------------------------------|
@@ -257,6 +247,51 @@ Each path supports the same operations:
 | `POST`   | `/{resource}`      | Create a record from a JSON body |
 | `PUT`    | `/{resource}/{id}` | Update a record from a JSON body |
 | `DELETE` | `/{resource}/{id}` | Delete a record                  |
+
+### Authentication and access
+
+Authentication uses an email, a BCrypt password hash and a server session (`JSESSIONID`).
+
+1. Register with `POST /auth/register` and a JSON body such as:
+
+   ```json
+   {
+      "email":"reader@example.com",
+      "password":"a-long-secret-password",
+      "firstName":"Alice",
+      "lastName":"Martin",
+      "gender":"FEMALE"
+   }
+   ```
+
+   Passwords require at least 8 characters. Registration returns `201` and does not log you in.
+2. Log in with `POST /auth/login` and a JSON body:
+
+   ```json
+   {
+      "email":"reader@example.com",
+      "password":"a-long-secret-password"
+   }
+   ```
+
+   Success returns `204`; invalid credentials return `401`. Retain the `JSESSIONID` cookie returned by the server.
+3. Call `GET /me` with that session cookie to retrieve the signed-in profile. This is the only route that requires authentication.
+4. Call `POST /auth/logout` to invalidate the session. It returns `204`.
+
+Emails are matched exactly, including case. The `/reader` and `/reader/{id}` routes are disabled; create accounts through `/auth/register` and retrieve the current account through `/me`.
+
+Books, authors, libraries, bookcases and shelves are public resources: their GET, POST, PUT and DELETE routes can be used without authentication. Password hashes and book-to-reader links are never included in JSON. Existing JPA removal cascades still apply: deleting an author or shelf (including through a parent library or bookcase) can delete associated books.
+
+Unauthenticated requests to `/me` return `401`. Disabled reader routes return `404`.
+
+The development seeders create two login-ready sample readers. Their passwords are stored as BCrypt hashes:
+
+| Email                         | Password      |
+|-------------------------------|---------------|
+| `reader@example.com`          | `password123` |
+| `thomas.bernard@example.com`  | `password123` |
+
+These credentials are intended for local development only. Register a dedicated reader for any non-development environment.
 
 ## Useful commands
 
@@ -292,7 +327,7 @@ Or select a seeder:
 make db:seed <seeder-name>
 ```
 
-Seeding uses the `dev` profile. It populates empty tables and reuses existing records, creating missing prerequisite data as needed. Book seeding requires at least two authors, two readers, and two shelves; if existing tables do not meet those requirements, add the missing records before retrying.
+Seeding uses the `dev` profile. Seeders synchronize their named fixtures and prerequisite data while preserving unrelated records. They can safely be executed again without duplicating the fixture dataset. The fixture keys are the author name, library name, reader email (or the legacy reader name), and book title plus author. Legacy Alice Martin and Thomas Bernard fixtures without credentials are upgraded automatically with the development emails and BCrypt passwords documented above. If a fixture key is duplicated or one of these emails belongs to another reader, seeding stops instead of choosing or overwriting a record arbitrarily.
 
 > [!NOTE]
 > **Destructive command:** `make db:drop` deletes all user tables and their data in the configured Docker PostgreSQL database. To recreate an empty schema afterward, run `make db:update`.

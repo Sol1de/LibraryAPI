@@ -2,7 +2,6 @@ package com.slain.library.seeder;
 
 import com.slain.library.model.Library;
 import com.slain.library.repository.LibraryRepository;
-import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +14,14 @@ public class LibrarySeeder {
         this.repository = repository;
     }
 
-    public List<Library> getAll() {
-        return repository.findAll();
-    }
-
-    public boolean isEmpty() {
-        return repository.count() == 0;
-    }
-
     public Library seed() {
-        Library library = new Library();
+        var matches = repository.findAll().stream()
+                .filter(candidate -> "Bibliothèque de démonstration".equals(candidate.getName()))
+                .toList();
+        if (matches.size() > 1) {
+            throw new IllegalStateException("Ambiguous library fixture: Bibliothèque de démonstration");
+        }
+        var library = matches.isEmpty() ? new Library() : matches.getFirst();
         library.setName("Bibliothèque de démonstration");
         library.setCountry("France");
         library.setCity("Paris");

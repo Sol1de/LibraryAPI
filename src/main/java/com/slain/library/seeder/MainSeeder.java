@@ -57,44 +57,33 @@ public class MainSeeder implements CommandLineRunner {
             case "BookSeeder", "MainSeeder" -> seedBooks();
             default -> throw new IllegalArgumentException("Unknown seeder: " + name);
         }
-        LOGGER.info("Seeder {} completed; existing data was preserved.", name);
+        LOGGER.info("Seeder {} completed; fixtures were synchronized and unrelated data was preserved.", name);
     }
 
     private List<Author> seedAuthors() {
-        return authorSeeder.isEmpty() ? authorSeeder.seed() : authorSeeder.getAll();
+        return authorSeeder.seed();
     }
 
     private List<Reader> seedReaders() {
-        return readerSeeder.isEmpty() ? readerSeeder.seed() : readerSeeder.getAll();
+        return readerSeeder.seed();
     }
 
     private Library seedLibrary() {
-        return librarySeeder.isEmpty() ? librarySeeder.seed() : librarySeeder.getAll().getFirst();
+        return librarySeeder.seed();
     }
 
     private List<BookShelf> seedBookShelves() {
-        return bookShelfSeeder.isEmpty()
-                ? bookShelfSeeder.seed(seedLibrary()) : bookShelfSeeder.getAll();
+        return bookShelfSeeder.seed(seedLibrary());
     }
 
     private List<Shelf> seedShelves() {
-        return shelfSeeder.isEmpty()
-                ? shelfSeeder.seed(seedBookShelves()) : shelfSeeder.getAll();
+        return shelfSeeder.seed(seedBookShelves());
     }
 
     private void seedBooks() {
-        // MainSeeder still fills missing parent tables when books already exist.
         var authors = seedAuthors();
         var readers = seedReaders();
         var shelves = seedShelves();
-        if (!bookSeeder.isEmpty()) {
-            return;
-        }
-        if (authors.size() < 2 || readers.size() < 2 || shelves.size() < 2) {
-            throw new IllegalStateException(
-                    "BookSeeder requires at least 2 authors, 2 readers and 2 shelves. "
-                    + "Existing tables are not modified; add the missing entities first.");
-        }
         bookSeeder.seed(authors, readers, shelves);
     }
 }

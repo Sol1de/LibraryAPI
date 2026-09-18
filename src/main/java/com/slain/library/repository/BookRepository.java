@@ -7,4 +7,6 @@ import java.util.UUID;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, UUID> {
+    java.util.List<Book> findAllByReaderId(UUID readerId);
+    java.util.Optional<Book> findByIdAndReaderId(UUID id, UUID readerId);
 }

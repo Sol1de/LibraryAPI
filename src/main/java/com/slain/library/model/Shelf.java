@@ -1,6 +1,7 @@
 package com.slain.library.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public class Shelf {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "shelf", cascade = CascadeType.REMOVE)
     private List<Book> book;
 
