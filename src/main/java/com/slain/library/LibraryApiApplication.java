@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LibraryApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LibraryApiApplication.class, args);
+        var context = SpringApplication.run(LibraryApiApplication.class, args);
+        if (java.util.Arrays.asList(args).contains("--library.command=true")) {
+            context.close();
+        }
     }
 
 }
