@@ -30,6 +30,16 @@ public class BookShelfService {
         return this.bookShelfRepository.save(bookShelf);
     }
 
+    public BookShelf update(UUID id, BookShelf bookShelf) throws BookShelfNotFoundException {
+        var existingBookShelf = this.bookShelfRepository.findById(id)
+                .orElseThrow(BookShelfNotFoundException::new);
+
+        existingBookShelf.setLibrary(bookShelf.getLibrary());
+        existingBookShelf.setShelf(bookShelf.getShelf());
+
+        return this.bookShelfRepository.save(existingBookShelf);
+    }
+
     public void delete(UUID id) throws BookShelfNotFoundException {
         var existingShelf = this.bookShelfRepository.findById(id)
                 .orElseThrow(BookShelfNotFoundException::new);

@@ -11,6 +11,9 @@ public class BookShelf {
      @GeneratedValue(strategy = GenerationType.UUID)
      private UUID id;
 
+     @ManyToOne
+     private Library library;
+
      @OneToMany(mappedBy = "bookShelf")
      private List<Shelf> shelf;
 
@@ -19,11 +22,19 @@ public class BookShelf {
           return id;
      }
 
+     public Library getLibrary() {
+          return library;
+     }
+
      public List<Shelf> getShelf() {
           return shelf;
      }
 
      // Setters
+     public void setLibrary(Library library) {
+          this.library = library;
+     }
+
      public void setShelf(List<Shelf> shelf) {
           this.shelf = shelf;
      }

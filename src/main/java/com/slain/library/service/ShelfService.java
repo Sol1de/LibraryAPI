@@ -35,6 +35,7 @@ public class ShelfService {
                 .orElseThrow(ShelfNotFoundException::new);
 
         existingShelf.setBookShelf(shelf.getBookShelf());
+        existingShelf.setBook(shelf.getBook());
 
         return this.shelfRepository.save(existingShelf);
     }

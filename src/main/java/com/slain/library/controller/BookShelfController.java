@@ -36,6 +36,11 @@ public class BookShelfController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.bookShelfService.create(bookShelf));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BookShelf> update(@PathVariable UUID id, @RequestBody BookShelf bookShelf) throws BookShelfNotFoundException {
+        return ResponseEntity.ok(this.bookShelfService.update(id, bookShelf));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID id) throws BookShelfNotFoundException {
         this.bookShelfService.delete(id);
@@ -43,7 +48,7 @@ public class BookShelfController {
 
         return ResponseEntity.status(status).body(Map.of(
                 "status", status.value(),
-                "message", "Shelf deleted successfully"
+                "message", "Bookshelf deleted successfully"
         ));
     }
 }
