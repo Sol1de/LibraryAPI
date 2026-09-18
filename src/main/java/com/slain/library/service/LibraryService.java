@@ -1,11 +1,10 @@
 package com.slain.library.service;
 
-import com.slain.library.exceptions.bookshelf.BookShelfNotFoundException;
 import com.slain.library.exceptions.library.LibraryNotFoundException;
-import com.slain.library.model.BookShelf;
 import com.slain.library.model.Library;
 import com.slain.library.repository.LibraryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +31,7 @@ public class LibraryService {
         return this.libraryRepository.save(library);
     }
 
+    @Transactional
     public Library update(UUID id, Library library) throws LibraryNotFoundException {
         var existingLibrary = this.libraryRepository.findById(id)
                 .orElseThrow(LibraryNotFoundException::new);
@@ -45,6 +45,7 @@ public class LibraryService {
         return this.libraryRepository.save(existingLibrary);
     }
 
+    @Transactional
     public void delete(UUID id) throws LibraryNotFoundException {
         var existingLibrary = this.libraryRepository.findById(id)
                 .orElseThrow(LibraryNotFoundException::new);

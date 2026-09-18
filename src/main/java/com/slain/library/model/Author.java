@@ -19,7 +19,7 @@ public class Author {
     @Enumerated(value = EnumType.STRING)
     private GenderType gender;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Book> books;
 
     // Getters

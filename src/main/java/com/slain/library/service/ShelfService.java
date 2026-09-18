@@ -4,6 +4,7 @@ import com.slain.library.exceptions.shelf.ShelfNotFoundException;
 import com.slain.library.model.Shelf;
 import com.slain.library.repository.ShelfRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class ShelfService {
         return this.shelfRepository.save(shelf);
     }
 
+    @Transactional
     public Shelf update(UUID id, Shelf shelf) throws ShelfNotFoundException {
         var existingShelf = this.shelfRepository.findById(id)
                 .orElseThrow(ShelfNotFoundException::new);
@@ -40,6 +42,7 @@ public class ShelfService {
         return this.shelfRepository.save(existingShelf);
     }
 
+    @Transactional
     public void delete(UUID id) throws ShelfNotFoundException {
         var existingShelf = this.shelfRepository.findById(id)
                 .orElseThrow(ShelfNotFoundException::new);

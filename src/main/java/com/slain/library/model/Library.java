@@ -20,7 +20,7 @@ public class Library {
 
     private String address;
 
-    @OneToMany(mappedBy = "library")
+    @OneToMany(mappedBy = "library", cascade = CascadeType.REMOVE)
     private List<BookShelf> bookShelf;
 
     // Getters

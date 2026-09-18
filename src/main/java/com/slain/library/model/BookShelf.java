@@ -14,7 +14,7 @@ public class BookShelf {
      @ManyToOne
      private Library library;
 
-     @OneToMany(mappedBy = "bookShelf")
+     @OneToMany(mappedBy = "bookShelf", cascade = CascadeType.REMOVE)
      private List<Shelf> shelf;
 
      // Getters

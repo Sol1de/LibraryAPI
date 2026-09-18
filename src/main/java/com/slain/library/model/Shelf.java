@@ -11,7 +11,7 @@ public class Shelf {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToMany(mappedBy = "shelf")
+    @OneToMany(mappedBy = "shelf", cascade = CascadeType.REMOVE)
     private List<Book> book;
 
     @ManyToOne

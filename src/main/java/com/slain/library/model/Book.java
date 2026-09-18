@@ -50,6 +50,14 @@ public class Book {
         return status;
     }
 
+    public Reader getReader() {
+        return reader;
+    }
+
+    public Shelf getShelf() {
+        return shelf;
+    }
+
     // Setters
     public void setTitle(String title) {
         this.title = title;
@@ -65,5 +73,13 @@ public class Book {
 
     public void setStatus(BookStatus status) {
         this.status = status;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public void setShelf(Shelf shelf) {
+        this.shelf = shelf;
     }
 }

@@ -4,6 +4,7 @@ import com.slain.library.exceptions.author.AuthorNotFoundException;
 import com.slain.library.model.Author;
 import com.slain.library.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class AuthorService {
         return this.authorRepository.save(author);
     }
 
+    @Transactional
     public Author update(UUID id, Author author) throws AuthorNotFoundException {
         var existingAuthor = this.authorRepository.findById(id)
                 .orElseThrow(AuthorNotFoundException::new);
@@ -42,6 +44,7 @@ public class AuthorService {
         return this.authorRepository.save(existingAuthor);
     }
 
+    @Transactional
     public void delete(UUID id) throws AuthorNotFoundException {
         var existingAuthor = this.authorRepository.findById(id)
                 .orElseThrow(AuthorNotFoundException::new);
